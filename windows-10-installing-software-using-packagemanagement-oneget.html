@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en" itemscope itemtype="http://schema.org/Person">
+<head>
+  <meta charset="utf-8">
+  <!-- Site Meta Data -->
+  <title>Windows 10: Installing software using PackageManagement (OneGet)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Wynand Booysen">
+
+  <link rel="shortcut icon" href="">
+
+  <!-- schema.org -->
+  <meta itemprop="name" content="Wynand Booysen">
+  <meta itemprop="image" content="">
+  <meta itemprop="description" content="">
+
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+  <!-- Style Meta Data -->
+  <link rel="stylesheet" href="/theme/css/style.css" type="text/css" />
+  <link rel="stylesheet" href="/theme/css/pygments.css" type="text/css" />
+
+  <!-- Feed Meta Data -->
+    <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Wynand Booysen ATOM Feed" />
+
+  <!-- Twitter Feed -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="">
+  <meta name="twitter:image" content="">
+
+<meta name="twitter:creator" content="">
+<meta name="twitter:url" content="/windows-10-installing-software-using-packagemanagement-oneget.html">
+<meta name="twitter:title" content="Wynand Booysen ~ Windows 10: Installing software using PackageManagement (OneGet)">
+<meta name="twitter:description" content="The best feature to be included with Windows 10 has to be the command-line based installer, at least for those of us in a SysAdmin and/or DevOps role. For those of you that have worked on Linux before and have used Yum and Apt-Get, this is Microsoft&#39;s attempt ...">
+
+<!-- Facebook Meta Data -->
+<meta property="og:title" content="Wynand Booysen ~ Windows 10: Installing software using PackageManagement (OneGet)" />
+<meta property="og:description" content="The best feature to be included with Windows 10 has to be the command-line based installer, at least for those of us in a SysAdmin and/or DevOps role. For those of you that have worked on Linux before and have used Yum and Apt-Get, this is Microsoft&#39;s attempt ..." />
+<meta property="og:image" content="" />
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <!--<center><a href=""><img id="avatar" src=""></a></center>-->
+    <h1>Wynand Booysen</h1>
+      <p>SysAdmin. Developer. Tinkerer.</p>
+    <br>
+
+
+    <nav class="nav">
+      <ul class="list-bare">
+      
+          <li><a class="nav__link" href="/">Blog</a></li>
+         
+          <li><a class="nav__link" href="/pages/about-me.html">About Me</a></li>
+        
+      </ul>
+    </nav>
+
+    <p class="social">
+        <a href="https://www.linkedin.com/in/wynand-booysen-b578a915" target="_blank" ><img src="/theme/images/icons/linkedin.png"></a>
+        <a href="https://github.com/wynandbooysen" target="_blank" ><img src="/theme/images/icons/github.png"></a>
+        <a href="https://twitter.com/wynandbooysen" target="_blank" ><img src="/theme/images/icons/twitter.png"></a>
+      <a href="/feeds/all.atom.xml" rel="alternate">
+        <img src="/theme/images/icons/rss.png"></a>
+    </p>
+
+    <h2>Categories</h2>
+    <ul class="navbar">
+      <li><a href="/category/linux.html">Linux</a></li>
+      <li><a href="/category/python.html">Python</a></li>
+      <li class="active"><a href="/category/windows.html">Windows</a></li>
+    </ul> 
+  </aside>
+
+  <!-- Content -->
+  <article>
+<section id="content">
+    <article>
+        <h2 class="post_title post_detail"><a href="/windows-10-installing-software-using-packagemanagement-oneget.html" rel="bookmark" title="Permalink to Windows 10: Installing software using PackageManagement (OneGet)">Windows 10: Installing software using PackageManagement (OneGet)</a></h2>
+        <div class="entry-content blog-post">
+            <p>The best feature to be included with Windows 10 has to be the
+command-line based installer, at least for those of us in a SysAdmin
+and/or DevOps role.</p>
+<p>For those of you that have worked on Linux before and have used Yum and
+Apt-Get, this is Microsoft's attempt to provide a similar experience for
+the Windows platform.</p>
+<p>It's been over a year since this was introduced in the Preview versions
+of Windows 10 so its still fairly new.  I found it wasn't as easy to get
+it going as a lot of articles and tutorials still reference the OneGet
+commands and since its been renamed to PackageManagement there has been
+some minor changes.</p>
+<p>To use PackageManagement (OneGet) on Windows 10 make sure you set the
+PowerShell execution policy to 'RemoteSigned' otherwise it will fail
+silently
+(<a href="https://github.com/OneGet/oneget/issues/97#issuecomment-139331418">bug</a>)</p>
+<div class="highlight"><pre><span></span><span class="nb">Set-ExecutionPolicy</span> <span class="n">RemoteSigned</span>
+</pre></div>
+
+
+<p>Add the Chocolatey plugin and repository using this one-liner to get
+access to 3rd party applications from the Chocolatey repository, the</p>
+<div class="highlight"><pre><span></span><span class="n">-Force</span>
+</pre></div>
+
+
+<p>flag performs a bootstrap that takes care of both:</p>
+<div class="highlight"><pre><span></span><span class="nb">Get-PackageProvider</span> <span class="n">Chocolatey</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+</pre></div>
+
+
+<p>That's it, we are ready to install some applications, using the <code>-Force</code> flag is similar
+to <code>-y</code>  used with
+Yum and Apt-Get which assumes Yes when prompted:</p>
+<ul>
+<li>VLC Media Player:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="n">Install-Package</span> <span class="n">vlc</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+</pre></div>
+
+
+<ul>
+<li>Skype:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="n">Install-Package</span> <span class="n">skype</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+</pre></div>
+
+
+<ul>
+<li>7zip:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="n">Install-Package</span> <span class="n">7zip</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+</pre></div>
+
+
+<ul>
+<li>Atom:</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="n">Install-Package</span> <span class="n">atom</span> <span class="n">-Force</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+</pre></div>
+
+
+<p>Or you can search for your favorite applications using this command:</p>
+<div class="highlight"><pre><span></span><span class="n">Find-Package</span> <span class="p">&lt;</span><span class="n">application</span><span class="p">&gt;</span> <span class="n">-Force</span>
+</pre></div>
+
+
+<p>There isn't a lot of applications available and some of those in the
+Chocolatey repository simply do not work.</p>
+<p>Hopefully we will see software companies (like Adobe, VMWare and Oracle
+) providing official repositories going forward, to ease the deployment
+and provisioning of systems in the future using the command-line.</p>
+        </div>
+        <div class="post_list">
+            <span>By </span>
+            <a href="/author/wynand-booysen.html">@Wynand Booysen</a>
+            <span> in </span>
+            <span class="post_category"><a href="/category/windows.html" rel="bookmark" title="Permalink to Windows">[ Windows ]</a></span>
+            <span class="post_date">Tue 22 December 2015</span>
+            <div><span>Tags : </span>
+            </div>
+
+            <div class="entry-social">
+                <span class="twitter"><a target="_blank" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=700');return false;" title="Twitter" href="https://twitter.com/share?url=/windows-10-installing-software-using-packagemanagement-oneget.html&text=Windows 10: Installing software using PackageManagement (OneGet)&via="><img src="/theme/images/icons/twitter-s.png"></a></span>
+
+                <span class="gplus"><a target="_blank" title="Google +" href="https://plus.google.com/share?url=/windows-10-installing-software-using-packagemanagement-oneget.html&hl=fr" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="/theme/images/icons/google-s.png"></a></span>
+
+                <span class="facebook"><a target="_blank" title="Facebook" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=500,width=700');return false;" href="https://www.facebook.com/sharer.php?u=/windows-10-installing-software-using-packagemanagement-oneget.html&t=Windows 10: Installing software using PackageManagement (OneGet)"><img src="/theme/images/icons/facebook-s.png"></a></span>
+
+                <a  target="_blank" title="Linkedin" href="https://www.linkedin.com/shareArticle?mini=true&url=/windows-10-installing-software-using-packagemanagement-oneget.html&title=Windows 10: Installing software using PackageManagement (OneGet)" rel="nofollow" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=450,width=650');return false;"><img src="/theme/images/icons/linkedin-s.png"></a>
+
+                <span class="mail"><a href="mailto:?subject=Windows 10: Installing software using PackageManagement (OneGet)&amp;body=Viens découvrir un article à propos de [Windows 10: Installing software using PackageManagement (OneGet)] sur le site de Wynand Booysen. /windows-10-installing-software-using-packagemanagement-oneget.html" title="Share by Email" target="_blank"><img src="/theme/images/icons/mail-s.png"></a></span>
+            </div>
+        </div>
+    </article>
+</section>
+  </article>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      Blog powered by <a href="http://getpelican.com/">Pelican</a>, 
+      which takes great advantage of <a href="http://python.org">Python</a>.
+    </p>
+  </footer>
+
+
+</body>
+</html>
