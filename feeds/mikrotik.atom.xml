@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Wynand Booysen</title><link href="wynandbooysen.com/" rel="alternate"></link><link href="wynandbooysen.com/feeds/mikrotik.atom.xml" rel="self"></link><id>wynandbooysen.com/</id><updated>2016-07-31T09:05:00+02:00</updated><entry><title>Mikrotik Configuration Snippets</title><link href="wynandbooysen.com/mikrotik-configuration-snippets.html" rel="alternate"></link><published>2016-07-31T09:05:00+02:00</published><author><name>Wynand Booysen</name></author><id>tag:,2016-07-31:wynandbooysen.com/mikrotik-configuration-snippets.html</id><summary type="html">&lt;p&gt;This post will contain snippets for various Mikrotik configuration options.&lt;/p&gt;
+&lt;div class="gist"&gt;
+    &lt;script src='https://gist.github.com/0eee4afa95897a70e5b63d3ee3f5515e.js'&gt;&lt;/script&gt;
+    &lt;noscript&gt;
+        &lt;pre&gt;&lt;code&gt;/ip dhcp-client add interface=ether1 disabled=no&lt;/code&gt;&lt;/pre&gt;
+    &lt;/noscript&gt;
+&lt;/div&gt;</summary><category term="script"></category><category term="router"></category><category term="firewall"></category></entry></feed>
