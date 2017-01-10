@@ -27,8 +27,21 @@
 &lt;p&gt;Now you can log into the virtual Mikrotik just like any other Mikrotik device.&lt;/p&gt;</content><category term="router"></category><category term="firewall"></category></entry><entry><title>Mikrotik WinBox for MacOS</title><link href="/mikrotik-winbox-for-macos.html" rel="alternate"></link><published>2016-08-08T08:37:00+02:00</published><updated>2016-08-08T08:37:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2016-08-08:/mikrotik-winbox-for-macos.html</id><summary type="html">&lt;p&gt;Mikrotik WinBox for MacOS&lt;/p&gt;</summary><content type="html">&lt;p&gt;Mikrotik's WinBox is a native Windows application used to manage and configure Mikrotik devices.&lt;/p&gt;
 &lt;p&gt;It is possible to run this under Wine on other operating systems.  Luckily for us Joshaven Potter builds a MacOS version with embedded Wine which you can download from his site &lt;a href="http://joshaven.com/resources/tools/winbox-for-mac/"&gt;http://joshaven.com/resources/tools/winbox-for-mac/&lt;/a&gt; and just drop into your applications directory and start using it immediately.&lt;/p&gt;
 &lt;p&gt;He also provides a MacOS version of Mikrotik's The Dude as well.&lt;/p&gt;</content><category term="macos"></category><category term="winbox"></category><category term="firewall"></category><category term="router"></category></entry><entry><title>Mikrotik Configuration Snippets</title><link href="/mikrotik-configuration-snippets.html" rel="alternate"></link><published>2016-07-31T09:05:00+02:00</published><updated>2016-07-31T09:05:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2016-07-31:/mikrotik-configuration-snippets.html</id><summary type="html">&lt;p&gt;Mikrotik Configuration Snippets&lt;/p&gt;</summary><content type="html">&lt;p&gt;This post will contain snippets for various Mikrotik configuration options.&lt;/p&gt;
-&lt;p&gt;Set ether1 to DHCP client
-[gist:id=0eee4afa95897a70e5b63d3ee3f5515e]&lt;/p&gt;</content><category term="script"></category><category term="router"></category><category term="firewall"></category></entry><entry><title>Moving to Pelican</title><link href="/moving-to-pelican.html" rel="alternate"></link><published>2016-07-21T17:05:00+02:00</published><updated>2016-07-21T17:05:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2016-07-21:/moving-to-pelican.html</id><summary type="html">&lt;p&gt;Moving to Pelican&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is my first post after switching to Pelican.&lt;/p&gt;
+&lt;p&gt;Set ether1 to DHCP client&lt;/p&gt;
+&lt;div class="gist"&gt;
+    &lt;script src='https://gist.github.com/0eee4afa95897a70e5b63d3ee3f5515e.js'&gt;&lt;/script&gt;
+    &lt;noscript&gt;
+        &lt;pre&gt;&lt;code&gt;/ip dhcp-client add interface=ether1 disabled=no&lt;/code&gt;&lt;/pre&gt;
+    &lt;/noscript&gt;
+&lt;/div&gt;
+&lt;p&gt;Override default SNMP community (Lockdown SNMP) &lt;/p&gt;
+&lt;div class="gist"&gt;
+    &lt;script src='https://gist.github.com/629f458dc7e93f826bee71a322317d53.js'&gt;&lt;/script&gt;
+    &lt;noscript&gt;
+        &lt;pre&gt;&lt;code&gt;/snmp community
+set [ find default=yes ] addresses=x.x.x.x/32 name=COMMUNITYNAME&lt;/code&gt;&lt;/pre&gt;
+    &lt;/noscript&gt;
+&lt;/div&gt;</content><category term="script"></category><category term="router"></category><category term="firewall"></category></entry><entry><title>Moving to Pelican</title><link href="/moving-to-pelican.html" rel="alternate"></link><published>2016-07-21T17:05:00+02:00</published><updated>2016-07-21T17:05:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2016-07-21:/moving-to-pelican.html</id><summary type="html">&lt;p&gt;Moving to Pelican&lt;/p&gt;</summary><content type="html">&lt;p&gt;This is my first post after switching to Pelican.&lt;/p&gt;
 &lt;p&gt;I decided that running a Virtual Private Server just to host WordPress was overkill, so I started looking at static site generators.&lt;/p&gt;
 &lt;p&gt;Ultimately ended up going with Pelican - Python based, mature and feature rich enough for what I need.&lt;/p&gt;
 &lt;p&gt;Now I only need to write more often :-)&lt;/p&gt;</content><category term="pelican"></category><category term="publishing"></category></entry><entry><title>Raspberry Pi - UPS server using NUT</title><link href="/raspberry-pi-ups-server-using-nut.html" rel="alternate"></link><published>2016-04-23T16:10:00+02:00</published><updated>2016-04-23T16:10:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2016-04-23:/raspberry-pi-ups-server-using-nut.html</id><summary type="html">&lt;p&gt;So today we will setup a NUT (Network UPS Tools) server on a Raspberry

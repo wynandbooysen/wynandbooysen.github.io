@@ -89,8 +89,21 @@
         <h2 class="post_title post_detail"><a href="/mikrotik-configuration-snippets.html" rel="bookmark" title="Permalink to Mikrotik Configuration Snippets">Mikrotik Configuration Snippets</a></h2>
         <div class="entry-content blog-post">
             <p>This post will contain snippets for various Mikrotik configuration options.</p>
-<p>Set ether1 to DHCP client
-[gist:id=0eee4afa95897a70e5b63d3ee3f5515e]</p>
+<p>Set ether1 to DHCP client</p>
+<div class="gist">
+    <script src='https://gist.github.com/0eee4afa95897a70e5b63d3ee3f5515e.js'></script>
+    <noscript>
+        <pre><code>/ip dhcp-client add interface=ether1 disabled=no</code></pre>
+    </noscript>
+</div>
+<p>Override default SNMP community (Lockdown SNMP) </p>
+<div class="gist">
+    <script src='https://gist.github.com/629f458dc7e93f826bee71a322317d53.js'></script>
+    <noscript>
+        <pre><code>/snmp community
+set [ find default=yes ] addresses=x.x.x.x/32 name=COMMUNITYNAME</code></pre>
+    </noscript>
+</div>
         </div>
         <div class="post_list">
             <span>By </span>
