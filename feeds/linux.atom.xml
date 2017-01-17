@@ -383,7 +383,7 @@ http://&amp;lt;YOUR_IP_ADDRESS&amp;gt;/phpvirtualbox and get the login prompt:&l
 &lt;p&gt;From here you can manage your VM's exactly like you would with the
 desktop application.&lt;/p&gt;
 &lt;h2&gt;&lt;strong&gt;Troubleshooting&lt;/strong&gt;&lt;/h2&gt;
-&lt;p&gt;If your console button appears to be greyed out confirm that the
+&lt;p&gt;If your console button appears to be grayed out confirm that the
 extension pack was installed successfully using:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vboxmanage list extpacks
 &lt;/pre&gt;&lt;/div&gt;

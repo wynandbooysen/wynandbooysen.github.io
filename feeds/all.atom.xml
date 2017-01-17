@@ -1,28 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Wynand Booysen</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2017-01-07T10:57:00+02:00</updated><entry><title>Using Ansible To Manage Mikrotik Devices</title><link href="/using-ansible-to-manage-mikrotik-devices.html" rel="alternate"></link><published>2017-01-07T10:57:00+02:00</published><updated>2017-01-07T10:57:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2017-01-07:/using-ansible-to-manage-mikrotik-devices.html</id><summary type="html">&lt;p&gt;Using Ansible To Manage Mikrotik Devices&lt;/p&gt;</summary><content type="html">&lt;p&gt;Mikrotik devices are very capable devices with lots of features for a reasonable price - the problem? Managing several devices and keeping your base configurations up-to-date and consistent.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Wynand Booysen</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2017-01-17T17:59:00+02:00</updated><entry><title>Setting Up Ubiquiti AP at Home with Dockerized Controller</title><link href="/setting-up-ubiquiti-ap-at-home-with-dockerized-controller.html" rel="alternate"></link><published>2017-01-17T17:59:00+02:00</published><updated>2017-01-17T17:59:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2017-01-17:/setting-up-ubiquiti-ap-at-home-with-dockerized-controller.html</id><summary type="html">&lt;p&gt;Setting Up Ubiquiti AP at Home with Dockerized Controller&lt;/p&gt;</summary><content type="html">&lt;p&gt;I got to the point where the all-in-one solutions provided by consumer grade router/modem/firewall/Wifi devices were just not cutting it anymore.&lt;/p&gt;
+&lt;p&gt;My HTPC is wired for Internet access, which seems to stay connected without any issue.  However my phones/tablets/laptops would randomly drop of the Wifi and not be able to reconnect to it or shows it's connected to Wifi but has no Internet access.&lt;/p&gt;
+&lt;p&gt;The only way to resolve the Wifi issue is to restart the DLink 'router'&lt;/p&gt;
+&lt;p&gt;So I made up my mind to separate these functions, at least the router/firewall from the Wifi.&lt;/p&gt;
+&lt;p&gt;Currently I'm borrowing a spare Ubiquiti to test with before committing to buying a unit for myself.&lt;/p&gt;
+&lt;p&gt;Ubiquiti provides software based Unifi Controller that is used to configure and manage the AccessPoints (APs).  Instead of spinning up a VM or installing it directly on one of my machines I just opted to run the docker container published by LinuxServer.io on docker hub (linuxserver/unifi)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run -d -h unifi --name&lt;span class="o"&gt;=&lt;/span&gt;unifi   -v /path/to/storage/for/configs/unifi:/config   -e &lt;span class="nv"&gt;PGID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;gid&amp;gt; -e &lt;span class="nv"&gt;PUID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;uid&amp;gt;    -p 8080:8080   -p 8081:8081   -p 8443:8443   -p 8843:8843   -p 8880:8880   linuxserver/unifi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Update the path to the directory to be used for the volume where the config file will be persisted on the docker host, and provide the GID and UID of the user that is the owner of the path specified&lt;/p&gt;
+&lt;p&gt;This will boot up and become accessible after a few seconds on https://ip:8443&lt;/p&gt;
+&lt;p&gt;This doesn't run the latest version but is recent enough for my purposes as this is only a temp solution.&lt;/p&gt;
+&lt;p&gt;First issue since I'm borrowing a unit, it has been configured before and has been sitting in a cupboard for a while.  So first step is to reset it back to factory settings by using the reset switch on the unit and a trusty paper clip - hold during boot until it flashes orange.&lt;/p&gt;
+&lt;p&gt;Second issue due to the age, the firmware might be too old to communicate with version 5 of the Unifi Controller software - I will cover upgrading the AP via SSH using the Controllers bundled firmware.&lt;/p&gt;
+&lt;p&gt;Once reset and booted up again, check your DHCP server for the lease or scan the network for the AP.  I've tried using the Ubiquiti Device Discovery Tool (Chrome Extension) but had no success in finding the device on the network.  So I got my IP from my DHCP server.&lt;/p&gt;
+&lt;p&gt;Armed with the IP of the AP, we SSH into the AP.  Default user name and password are both ubnt&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh ubnt@YOUR.AP.IP.ADDRESS
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Once logged in the console will display the model and version number.  From here we will issue the upgrade command as follow:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;upgrade http://YOUR.CONTROLLER.IP.ADDRESS:8080/dl/firmware/BZ2/3.7.28.5442/firmware.
+bin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Replace BZ2 with your model as required and the firmware version, which in my case is 3.7.28.5442 with the appropriate version found under:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/usr/lib/unifi/dl/firmware/MODEL/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;inside the docker image, which can be accessed while it is running by executing:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker &lt;span class="nb"&gt;exec&lt;/span&gt; -it unifi /bin/bash
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and navigating to the bundled firmware directory as listed above.&lt;/p&gt;
+&lt;p&gt;After updating however it was still failing to detect the AP from the controller, because the AP tries to register by looking for http://unifi:8080/inform on the local network.  So you can either set an ALIAS for the Unifi Controller in DNS, pass option 43 in your DHCP scope or manually update the address on the AP while logged in via SSH by issuing:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mca-cli
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;to enter CLI, then:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;set-inform http://ip-of-controller:8080/inform
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;after which it should appear in the Unifi Controller with the option to adopt it, and then issue the set-inform command again to complete the handshake after which the status will be provisioning followed by connected.&lt;/p&gt;
+&lt;p&gt;In a later post I'll review setting up the actual AP from the Unifi Controller, assigning an SSID as well as other options offered.&lt;/p&gt;</content><category term="ubiquiti"></category><category term="docker"></category><category term="access point"></category></entry><entry><title>Using Ansible To Manage Mikrotik Devices</title><link href="/using-ansible-to-manage-mikrotik-devices.html" rel="alternate"></link><published>2017-01-07T10:57:00+02:00</published><updated>2017-01-07T10:57:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2017-01-07:/using-ansible-to-manage-mikrotik-devices.html</id><summary type="html">&lt;p&gt;Using Ansible To Manage Mikrotik Devices&lt;/p&gt;</summary><content type="html">&lt;p&gt;Mikrotik devices are very capable devices with lots of features for a reasonable price - the problem? Managing several devices and keeping your base configurations up-to-date and consistent.&lt;/p&gt;
 &lt;p&gt;Mikrotik devices have an application programming interface (API) that can be used for management, but you'll need to roll your own solution.  But they can also be accessed and managed via SSH.&lt;/p&gt;
 &lt;p&gt;Mikrotik does also provide software named The Dude which does network monitoring as well as some remote management, but in order to establish and maintain an consistent base line one really needs a configuration management tool.&lt;/p&gt;
 &lt;p&gt;So in order to use a configuration tool for Mikrotik devices, it has to be agentless and able to manage them over SSH - and easy to use.&lt;/p&gt;
 &lt;p&gt;So I picked Ansible since it met the criteria the best.  You need a server that can SSH into your Mikrotik devices which serves as the control server, and Ansible Playbooks which contain the tasks to be performed against the managed nodes and a list of hosts that need to be managed.  The Playbooks are written in YAML.  It works, but it's not perfect and here is why.&lt;/p&gt;
-&lt;p&gt;Mikrotik's RouterOS iss based on the Linux kernel, but it is a minimal purpose built OS.  It doesn't have Python installed - which is what Ansible uses to manage the nodes.  It does check for Python on the node after connecting by default, but you have the option to override this in your Playbook and execute RAW commands directly against the node&lt;/p&gt;
+&lt;p&gt;Mikrotik's RouterOS is based on the Linux kernel, but it is a minimal purpose built OS.  It doesn't have Python installed - which is what Ansible uses to manage the nodes.  It does check for Python on the node after connecting by default, but you have the option to override this in your Playbook and execute RAW commands directly against the node&lt;/p&gt;
 &lt;p&gt;It doesn't properly support pseudo terminals (PTY) which means the connection stays open/active and Ansible will appear to be hanging.&lt;/p&gt;
 &lt;p&gt;In previous versions of Ansible a PTY was only used when the command needed to be executed as root. An if statement prevented the code from always using it. Since Ansible v2+ a PTY is always used unless specifically disabled in the ansible.cfg by uncommenting a line.  This however is only disables it for Paramiko connections, which is a little bit slower, but not OpenSSH connections.  Paramiko also throws 'No handlers could be found for logger 'paramiko.transport'' when it encounters an error due to logging not being configured, but you can just use -vvvv when executing the Playbook to debug the errors.&lt;/p&gt;
-&lt;p&gt;These few quirks aside, Ansible does make it fairly easy to manage Mikrotik devices.&lt;/p&gt;</content><category term="script"></category><category term="router"></category><category term="firewall"></category><category term="ansible"></category></entry><entry><title>FitBit Presence Detection</title><link href="/fitbit-presence-detection.html" rel="alternate"></link><published>2016-10-08T18:00:00+02:00</published><updated>2016-10-08T18:00:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2016-10-08:/fitbit-presence-detection.html</id><summary type="html">&lt;p&gt;FitBit Presence Detection&lt;/p&gt;</summary><content type="html">&lt;p&gt;Show with the launch of the FitBit Alta and the new FitBit Flex 2 the prices of the FitBit Flex was bound to go down.  So I picked up a FitBit Flex for just R800.  So why did I get one?&lt;/p&gt;
-&lt;p&gt;Well I try and keep fit and tracking your activity helps you stay motivated.  But mainly I wanted to check the sleep monitoring function and have another Bluetooth device to be possilbly used for presence detection.&lt;/p&gt;
+&lt;p&gt;These few quirks aside, Ansible does make it easier to manage Mikrotik devices.&lt;/p&gt;</content><category term="script"></category><category term="router"></category><category term="firewall"></category><category term="ansible"></category></entry><entry><title>FitBit Presence Detection</title><link href="/fitbit-presence-detection.html" rel="alternate"></link><published>2016-10-08T18:00:00+02:00</published><updated>2016-10-08T18:00:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2016-10-08:/fitbit-presence-detection.html</id><summary type="html">&lt;p&gt;FitBit Presence Detection&lt;/p&gt;</summary><content type="html">&lt;p&gt;Show with the launch of the FitBit Alta and the new FitBit Flex 2 the prices of the FitBit Flex was bound to go down.  So I picked up a FitBit Flex for just R800.  So why did I get one?&lt;/p&gt;
+&lt;p&gt;Well I try and keep fit and tracking your activity helps you stay motivated.  But mainly I wanted to check the sleep monitoring function and have another Bluetooth device to be possibly used for presence detection.&lt;/p&gt;
 &lt;p&gt;So the FitBit Flex uses a Nordic Semiconductor nRF8001 chip - which is for Bluetooth 4.0 LE connectivity.&lt;/p&gt;
 &lt;p&gt;It also comes with a USB dongle that uses Texas Instruments CC2540F128 Bluetooth LE SoC to sync the Flex's data via a computer instead of the phone app.&lt;/p&gt;
 &lt;p&gt;So since the Flex is a Bluetooth device it should have unique hardware address (MAC)?&lt;/p&gt;
 &lt;p&gt;Galileo is a Python utility by Benoit Allard that allows communication with the Bluetooth based FitBit devices and sync to FitBit website.&lt;/p&gt;
 &lt;p&gt;Using Galileo you can scan for FitBit devices to sync their data.  It will list all devices along with their MAC addresses.&lt;/p&gt;
-&lt;p&gt;Simple bash script and we can grep for the specific unit's MAC address and execute something when the device is present.&lt;/p&gt;</content><category term="fitbit"></category><category term="Bluetooth"></category></entry><entry><title>Mikrotik Inside VirtualBox</title><link href="/mikrotik-inside-virtualbox.html" rel="alternate"></link><published>2016-08-20T11:00:00+02:00</published><updated>2016-08-20T11:00:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2016-08-20:/mikrotik-inside-virtualbox.html</id><summary type="html">&lt;p&gt;Mikrotik Inside VirtualBox&lt;/p&gt;</summary><content type="html">&lt;p&gt;We'll have a look at setting up a virtual Mikrotik using VirtualBox.  This handy for testing scripts/configurations as well as testing backups from prodcution devices - by restoring them onto the virtual Mikrotik.&lt;/p&gt;
+&lt;p&gt;Simple bash script and we can grep for the specific unit's MAC address and execute something when the device is present.&lt;/p&gt;</content><category term="fitbit"></category><category term="Bluetooth"></category></entry><entry><title>Mikrotik Inside VirtualBox</title><link href="/mikrotik-inside-virtualbox.html" rel="alternate"></link><published>2016-08-20T11:00:00+02:00</published><updated>2016-08-20T11:00:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2016-08-20:/mikrotik-inside-virtualbox.html</id><summary type="html">&lt;p&gt;Mikrotik Inside VirtualBox&lt;/p&gt;</summary><content type="html">&lt;p&gt;We'll have a look at setting up a virtual Mikrotik using VirtualBox.  This handy for testing scripts/configurations as well as testing backups from production devices - by restoring them onto the virtual Mikrotik.&lt;/p&gt;
 &lt;p&gt;Head on over to &lt;a href="http://www.mikrotik.com/download"&gt;http://www.mikrotik.com/download&lt;/a&gt; and download the VDI image.&lt;/p&gt;
 &lt;p&gt;After downloading the file simply copy and paste it into the same directory, which depending on the host OS will append the word copy to it in one fashion or another.  The reason for this is that we will use the 'copy' as the hard drive of the virtual Mikrotik allowing for a simple delete and replace with yet another copy whenever we need to do a hard 'reset' on the device.&lt;/p&gt;
 &lt;p&gt;Then on VirtualBox, create a new virtual machine.  For the sake of simplicity I'll name mine Mikrotik.&lt;/p&gt;
 &lt;p&gt;Select Type as Linux and for Version Other Linux (64bit) and click Continue.&lt;/p&gt;
 &lt;p&gt;For RAM I drop it to 128MB which is still somewhat excessive and click Continue.&lt;/p&gt;
 &lt;p&gt;Now select 'Do not add a virtual hard disk' - we will add the 'copy' of the downloaded VDI after creating the virtual machine.  Click on Create&lt;/p&gt;
-&lt;p&gt;Ignore the prompt about the machine not having a hard drive.  Once created manually add the exisitng hard drive and change the network adapter to bridged mode so that it will receive an IP on your network and allow you to connect using WinBox/SSH/WebFig.&lt;/p&gt;
-&lt;p&gt;It should take a few seconds for the virtual Mikrotik to boot, afterwhich you can log into the Mikrotik using the default admin user with no password.&lt;/p&gt;
+&lt;p&gt;Ignore the prompt about the machine not having a hard drive.  Once created manually add the existing hard drive and change the network adapter to bridged mode so that it will receive an IP on your network and allow you to connect using WinBox/SSH/WebFig.&lt;/p&gt;
+&lt;p&gt;It should take a few seconds for the virtual Mikrotik to boot, after which you can log into the Mikrotik using the default admin user with no password.&lt;/p&gt;
 &lt;p&gt;Issue the command &lt;code&gt;/ip address print&lt;/code&gt; to get the IP of the virtual Mikrotik.&lt;/p&gt;
 &lt;p&gt;Now you can log into the virtual Mikrotik just like any other Mikrotik device.&lt;/p&gt;</content><category term="router"></category><category term="firewall"></category></entry><entry><title>Mikrotik WinBox for MacOS</title><link href="/mikrotik-winbox-for-macos.html" rel="alternate"></link><published>2016-08-08T08:37:00+02:00</published><updated>2016-08-08T08:37:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2016-08-08:/mikrotik-winbox-for-macos.html</id><summary type="html">&lt;p&gt;Mikrotik WinBox for MacOS&lt;/p&gt;</summary><content type="html">&lt;p&gt;Mikrotik's WinBox is a native Windows application used to manage and configure Mikrotik devices.&lt;/p&gt;
 &lt;p&gt;It is possible to run this under Wine on other operating systems.  Luckily for us Joshaven Potter builds a MacOS version with embedded Wine which you can download from his site &lt;a href="http://joshaven.com/resources/tools/winbox-for-mac/"&gt;http://joshaven.com/resources/tools/winbox-for-mac/&lt;/a&gt; and just drop into your applications directory and start using it immediately.&lt;/p&gt;
@@ -428,7 +477,7 @@ http://&amp;lt;YOUR_IP_ADDRESS&amp;gt;/phpvirtualbox and get the login prompt:&l
 &lt;p&gt;From here you can manage your VM's exactly like you would with the
 desktop application.&lt;/p&gt;
 &lt;h2&gt;&lt;strong&gt;Troubleshooting&lt;/strong&gt;&lt;/h2&gt;
-&lt;p&gt;If your console button appears to be greyed out confirm that the
+&lt;p&gt;If your console button appears to be grayed out confirm that the
 extension pack was installed successfully using:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vboxmanage list extpacks
 &lt;/pre&gt;&lt;/div&gt;

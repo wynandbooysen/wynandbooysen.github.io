@@ -67,6 +67,7 @@
 
     <h2>Categories</h2>
     <ul class="navbar">
+      <li><a href="/category/docker.html">Docker</a></li>
       <li><a href="/category/linux.html">Linux</a></li>
       <li class="active"><a href="/category/mikrotik.html">Mikrotik</a></li>
       <li><a href="/category/python.html">Python</a></li>
@@ -93,10 +94,10 @@
 <p>Mikrotik does also provide software named The Dude which does network monitoring as well as some remote management, but in order to establish and maintain an consistent base line one really needs a configuration management tool.</p>
 <p>So in order to use a configuration tool for Mikrotik devices, it has to be agentless and able to manage them over SSH - and easy to use.</p>
 <p>So I picked Ansible since it met the criteria the best.  You need a server that can SSH into your Mikrotik devices which serves as the control server, and Ansible Playbooks which contain the tasks to be performed against the managed nodes and a list of hosts that need to be managed.  The Playbooks are written in YAML.  It works, but it's not perfect and here is why.</p>
-<p>Mikrotik's RouterOS iss based on the Linux kernel, but it is a minimal purpose built OS.  It doesn't have Python installed - which is what Ansible uses to manage the nodes.  It does check for Python on the node after connecting by default, but you have the option to override this in your Playbook and execute RAW commands directly against the node</p>
+<p>Mikrotik's RouterOS is based on the Linux kernel, but it is a minimal purpose built OS.  It doesn't have Python installed - which is what Ansible uses to manage the nodes.  It does check for Python on the node after connecting by default, but you have the option to override this in your Playbook and execute RAW commands directly against the node</p>
 <p>It doesn't properly support pseudo terminals (PTY) which means the connection stays open/active and Ansible will appear to be hanging.</p>
 <p>In previous versions of Ansible a PTY was only used when the command needed to be executed as root. An if statement prevented the code from always using it. Since Ansible v2+ a PTY is always used unless specifically disabled in the ansible.cfg by uncommenting a line.  This however is only disables it for Paramiko connections, which is a little bit slower, but not OpenSSH connections.  Paramiko also throws 'No handlers could be found for logger 'paramiko.transport'' when it encounters an error due to logging not being configured, but you can just use -vvvv when executing the Playbook to debug the errors.</p>
-<p>These few quirks aside, Ansible does make it fairly easy to manage Mikrotik devices.</p>
+<p>These few quirks aside, Ansible does make it easier to manage Mikrotik devices.</p>
         </div>
         <div class="post_list">
             <span>By </span>

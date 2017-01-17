@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Wynand Booysen - Docker</title><link href="/" rel="alternate"></link><link href="/feeds/docker.atom.xml" rel="self"></link><id>/</id><updated>2017-01-17T17:59:00+02:00</updated><entry><title>Setting Up Ubiquiti AP at Home with Dockerized Controller</title><link href="/setting-up-ubiquiti-ap-at-home-with-dockerized-controller.html" rel="alternate"></link><published>2017-01-17T17:59:00+02:00</published><updated>2017-01-17T17:59:00+02:00</updated><author><name>Wynand Booysen</name></author><id>tag:None,2017-01-17:/setting-up-ubiquiti-ap-at-home-with-dockerized-controller.html</id><summary type="html">&lt;p&gt;Setting Up Ubiquiti AP at Home with Dockerized Controller&lt;/p&gt;</summary><content type="html">&lt;p&gt;I got to the point where the all-in-one solutions provided by consumer grade router/modem/firewall/Wifi devices were just not cutting it anymore.&lt;/p&gt;
+&lt;p&gt;My HTPC is wired for Internet access, which seems to stay connected without any issue.  However my phones/tablets/laptops would randomly drop of the Wifi and not be able to reconnect to it or shows it's connected to Wifi but has no Internet access.&lt;/p&gt;
+&lt;p&gt;The only way to resolve the Wifi issue is to restart the DLink 'router'&lt;/p&gt;
+&lt;p&gt;So I made up my mind to separate these functions, at least the router/firewall from the Wifi.&lt;/p&gt;
+&lt;p&gt;Currently I'm borrowing a spare Ubiquiti to test with before committing to buying a unit for myself.&lt;/p&gt;
+&lt;p&gt;Ubiquiti provides software based Unifi Controller that is used to configure and manage the AccessPoints (APs).  Instead of spinning up a VM or installing it directly on one of my machines I just opted to run the docker container published by LinuxServer.io on docker hub (linuxserver/unifi)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run -d -h unifi --name&lt;span class="o"&gt;=&lt;/span&gt;unifi   -v /path/to/storage/for/configs/unifi:/config   -e &lt;span class="nv"&gt;PGID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;gid&amp;gt; -e &lt;span class="nv"&gt;PUID&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;uid&amp;gt;    -p 8080:8080   -p 8081:8081   -p 8443:8443   -p 8843:8843   -p 8880:8880   linuxserver/unifi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Update the path to the directory to be used for the volume where the config file will be persisted on the docker host, and provide the GID and UID of the user that is the owner of the path specified&lt;/p&gt;
+&lt;p&gt;This will boot up and become accessible after a few seconds on https://ip:8443&lt;/p&gt;
+&lt;p&gt;This doesn't run the latest version but is recent enough for my purposes as this is only a temp solution.&lt;/p&gt;
+&lt;p&gt;First issue since I'm borrowing a unit, it has been configured before and has been sitting in a cupboard for a while.  So first step is to reset it back to factory settings by using the reset switch on the unit and a trusty paper clip - hold during boot until it flashes orange.&lt;/p&gt;
+&lt;p&gt;Second issue due to the age, the firmware might be too old to communicate with version 5 of the Unifi Controller software - I will cover upgrading the AP via SSH using the Controllers bundled firmware.&lt;/p&gt;
+&lt;p&gt;Once reset and booted up again, check your DHCP server for the lease or scan the network for the AP.  I've tried using the Ubiquiti Device Discovery Tool (Chrome Extension) but had no success in finding the device on the network.  So I got my IP from my DHCP server.&lt;/p&gt;
+&lt;p&gt;Armed with the IP of the AP, we SSH into the AP.  Default user name and password are both ubnt&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh ubnt@YOUR.AP.IP.ADDRESS
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Once logged in the console will display the model and version number.  From here we will issue the upgrade command as follow:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;upgrade http://YOUR.CONTROLLER.IP.ADDRESS:8080/dl/firmware/BZ2/3.7.28.5442/firmware.
+bin
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Replace BZ2 with your model as required and the firmware version, which in my case is 3.7.28.5442 with the appropriate version found under:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/usr/lib/unifi/dl/firmware/MODEL/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;inside the docker image, which can be accessed while it is running by executing:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker &lt;span class="nb"&gt;exec&lt;/span&gt; -it unifi /bin/bash
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and navigating to the bundled firmware directory as listed above.&lt;/p&gt;
+&lt;p&gt;After updating however it was still failing to detect the AP from the controller, because the AP tries to register by looking for http://unifi:8080/inform on the local network.  So you can either set an ALIAS for the Unifi Controller in DNS, pass option 43 in your DHCP scope or manually update the address on the AP while logged in via SSH by issuing:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mca-cli
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;to enter CLI, then:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;set-inform http://ip-of-controller:8080/inform
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;after which it should appear in the Unifi Controller with the option to adopt it, and then issue the set-inform command again to complete the handshake after which the status will be provisioning followed by connected.&lt;/p&gt;
+&lt;p&gt;In a later post I'll review setting up the actual AP from the Unifi Controller, assigning an SSID as well as other options offered.&lt;/p&gt;</content><category term="ubiquiti"></category><category term="docker"></category><category term="access point"></category></entry></feed>
